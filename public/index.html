@@ -332,9 +332,11 @@
   <script src="/js/sounds.js"></script>
   <script src="/js/game.js"></script>
   <script>
-    // Initialize Lucide icons after DOM loads
+    // Initialize Lucide icons after DOM loads (guard if script failed to load)
     document.addEventListener('DOMContentLoaded', () => {
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
     });
   </script>
 </body>
