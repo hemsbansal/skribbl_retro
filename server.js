@@ -2,7 +2,6 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const path = require('path');
-const { v4: uuidv4 } = require('uuid');
 const { Room, GAME_STATES } = require('./server/Room');
 const { generateHint } = require('./server/words');
 
