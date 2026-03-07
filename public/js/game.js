@@ -1,6 +1,12 @@
-// ===== GAME CLIENT - FIXED =====
-// On Vercel, WebSocket upgrades can fail; prefer long polling for reliability.
-const socket = io({ transports: ['polling'] });
+// ===== GAME CLIENT =====
+// Use both transports; after server restart (e.g. Render spin-up) force clean reconnect.
+const socket = io({
+  transports: ['websocket', 'polling'],
+  reconnection: true,
+  reconnectionAttempts: Infinity,
+  reconnectionDelay: 1500,
+  timeout: 20000
+});
 
 // State
 let myId = null;
@@ -1130,7 +1136,13 @@ socket.on('kickVoteUpdate', (data) => {
   addChat({ system: true, text: `${data.voterName} voted to kick ${data.targetName} (${data.votes}/${data.needed})`, type: 'kick' });
 });
 
-socket.on('disconnect', () => { showToast('Disconnected. Reconnecting...', 'error'); });
+socket.on('disconnect', (reason) => {
+  showToast('Disconnected. Reconnecting...', 'error');
+  // After server restart (e.g. Render "Session ID unknown") force a clean reconnect
+  if (reason === 'transport error' || reason === 'transport close') {
+    setTimeout(() => { socket.connect(); }, 1500);
+  }
+});
 socket.on('connect', () => { if (currentRoom) showToast('Reconnected!', 'success'); });
 
 // ===== UTILITY =====
