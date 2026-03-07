@@ -1,0 +1,10 @@
+# Render Blueprint – single instance required for Socket.IO (avoids "Session ID unknown")
+# https://docs.render.com/blueprint-spec
+services:
+  - type: web
+    name: scribble-clone
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    numInstances: 1
+    healthCheckPath: /
